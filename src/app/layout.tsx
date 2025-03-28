@@ -19,7 +19,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "FILMCLOTHING.ONE",
+  title: "FILMSCLOTHING.ONE",
   description: "My personal film record",
 };
 
