@@ -46,7 +46,7 @@ export default function Home() {
   return (
     <main className="w-screen h-screen flex flex-col justify-between items-center overflow-hidden">
       <motion.header 
-        className="text-[13vw] leading-none"
+        className="text-[12vw] leading-none"
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
@@ -55,7 +55,7 @@ export default function Home() {
           ease: [0.25, 0.1, 0.25, 1],
         }}
       >
-        {"{FILMSCLOTHING.CA}"}
+        {"{FILMSCLOTHING.ONE}"}
       </motion.header>
       <Image src="/dancing2.gif" width={170} height={150} alt="Dancing Ascii Art" className="pb-2" />
 
