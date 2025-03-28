@@ -19,7 +19,7 @@ const movies = [
     },
     {
       title: "Pulp Fiction",
-      year: "2025 March 19",
+      year: "2025 March 19th",
       ratings: "★★★",
       poster: "/posters/pulpfiction.jpg",
     },

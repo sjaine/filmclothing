@@ -82,6 +82,10 @@ export default function Home() {
               rotate: -5,
               transition: { duration: 0.4 },
             }}
+            whileTap={{
+              rotate: -5,
+              transition: { duration: 0.4 },
+            }}
           >
             <MovieCard {...movie} />
           </motion.div>
