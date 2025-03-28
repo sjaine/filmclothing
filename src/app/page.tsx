@@ -10,19 +10,20 @@ import Image from 'next/image';
 // https://www.youtube.com/watch?v=uj1LLh-IahM Scroll
 
 export default function Home() {
-  const itemsRef = useRef(null);
+  const itemsRef = useRef<HTMLDivElement>(null);
   const [ isMouseDown, setIsMouseDown ] = useState(false);
   const [ startX, setStartX]  = useState(0);
   const [ scrollLeft, setScrollLeft ] = useState(0);
 
   const handleMouseDown = (e: { pageX: number; }) => {
+    if (!itemsRef.current) return;
     setIsMouseDown(true);
     setStartX(e.pageX - itemsRef.current.offsetLeft);
     setScrollLeft(itemsRef.current.scrollLeft);
   }
 
   const handleMouseLeave = (e: { preventDefault: () => void; pageX: number; }) => {
-    if(!isMouseDown) return;
+    if (!itemsRef.current || !isMouseDown) return;
     e.preventDefault();
     const x = e.pageX - itemsRef.current.offsetLeft;
     const walk = (x-startX)*2; 
@@ -34,7 +35,7 @@ export default function Home() {
   }
 
   const handleMouseMove = (e: { preventDefault: () => void; pageX: number; }) => {
-    if (!isMouseDown) return;
+    if (!itemsRef.current || !isMouseDown) return;
     e.preventDefault();
     const x = e.pageX - itemsRef.current.offsetLeft;
     const walk = (x - startX) * 2;
