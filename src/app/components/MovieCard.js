@@ -1,6 +1,6 @@
 export default function MovieCard({ title, year, ratings, poster }) {
     return (
-      <div className="movie-card">
+      <div className="movie-card select-none pointer-events-none">
         <div className="flex justify-between">
             <p className="text-xl">{year}</p>
             <p className="text-xl">{ratings}</p>
