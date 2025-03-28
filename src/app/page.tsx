@@ -15,13 +15,13 @@ export default function Home() {
   const [ startX, setStartX]  = useState(0);
   const [ scrollLeft, setScrollLeft ] = useState(0);
 
-  const handleMouseDown = (e) => {
+  const handleMouseDown = (e: { pageX: number; }) => {
     setIsMouseDown(true);
     setStartX(e.pageX - itemsRef.current.offsetLeft);
     setScrollLeft(itemsRef.current.scrollLeft);
   }
 
-  const handleMouseLeave = (e) => {
+  const handleMouseLeave = (e: { preventDefault: () => void; pageX: number; }) => {
     if(!isMouseDown) return;
     e.preventDefault();
     const x = e.pageX - itemsRef.current.offsetLeft;
@@ -33,7 +33,7 @@ export default function Home() {
     setIsMouseDown(false);
   }
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: { preventDefault: () => void; pageX: number; }) => {
     if (!isMouseDown) return;
     e.preventDefault();
     const x = e.pageX - itemsRef.current.offsetLeft;
