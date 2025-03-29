@@ -1,5 +1,3 @@
-import Image from 'next/image';
-
 interface Post {
   id: string;
   title: string;
@@ -15,14 +13,14 @@ export default function MovieCard({ movie }: { movie: Post }) {
         <p className="text-xl">{movie.year}</p>
         <p className="text-xl">{movie.ratings}</p>
       </div>
-      <Image
+      <img
+        loading="lazy"
+        decoding="async"
         src={movie.poster}
         alt={movie.title}
-        width={270}                // Resize here!
-        height={380}
-        className="object-cover"
-        placeholder="blur"
-        blurDataURL="/placeholder.jpg"
+        width="270"
+        height="380"
+        className="w-[270px] h-[380px] object-cover"
       />
     </div>
   );
