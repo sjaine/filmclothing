@@ -1,6 +1,6 @@
 import { Client } from '@notionhq/client';
 
-const notion = new Client({ auth: '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' });
+const notion = new Client({ auth: process.env.NOTION_API_KEY });
 
 export async function getBlogPosts() {
   const databaseId = process.env.NOTION_DATABASE_ID;
