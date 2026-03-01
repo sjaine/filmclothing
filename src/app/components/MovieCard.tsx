@@ -22,6 +22,7 @@ export default function MovieCard({ movie }: { movie: Post }) {
           fill
           sizes="270px"
           className="object-cover"
+          quality={50}
           priority={false}
         />
       </div>
