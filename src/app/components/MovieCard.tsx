@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 interface Post {
   id: string;
   title: string;
@@ -13,15 +15,16 @@ export default function MovieCard({ movie }: { movie: Post }) {
         <p className="text-xl">{movie.year}</p>
         <p className="text-xl">{movie.ratings}</p>
       </div>
-      <img
-        loading="lazy"
-        decoding="async"
-        src={movie.poster}
-        alt={movie.title}
-        width="270"
-        height="380"
-        className="w-[270px] h-[380px] object-cover"
-      />
+      <div className="relative w-[270px] h-[380px] overflow-hidden">
+        <Image
+          src={movie.poster}
+          alt={movie.title}
+          fill
+          sizes="270px"
+          className="object-cover"
+          priority={false}
+        />
+      </div>
     </div>
   );
 }

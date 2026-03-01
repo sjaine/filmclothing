@@ -1,10 +1,10 @@
 import { getBlogPosts } from '@/app/data/notion';
 import MovieHome from './components/MovieHome'
 
-export const revalidate = 60;
+export const revalidate = 0;
 
 export default async function Home() {
-  const posts = await getBlogPosts();
+  const data = await getBlogPosts();
 
-  return <MovieHome posts={posts} />;
+  return <MovieHome initialData={data} />;
 }
