@@ -86,6 +86,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
         height={150}
         alt="Dancing Ascii Art"
         className="pb-2"
+        unoptimized
       />
 
       <section
