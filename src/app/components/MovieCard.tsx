@@ -5,7 +5,7 @@ const getOptimizedImageUrl = (url: string) => {
 
   if (url.includes("m.media-amazon.com")) {
     const baseUrl = url.split("._V1_")[0];
-    return `${baseUrl}._V1_UX300_.webp`;
+    return `${baseUrl}._V1_UX500_.webp`;
   }
   
   return url;
@@ -20,7 +20,7 @@ interface Post {
 
 export default function MovieCard({ movie }: { movie: Post }) {
   const optimizedPoster = getOptimizedImageUrl(movie.poster);
-  
+
   return (
     <div className="movie-card select-none pointer-events-none">
       <div className="flex justify-between">
