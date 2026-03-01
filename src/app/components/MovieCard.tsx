@@ -1,5 +1,15 @@
 import Image from "next/image";
 
+const getOptimizedImageUrl = (url: string) => {
+  if (!url) return "";
+
+  if (url.includes("m.media-amazon.com")) {
+    const baseUrl = url.split("._V1_")[0];
+    return `${baseUrl}._V1_UX300_.webp`;
+  }
+  
+  return url;
+};
 interface Post {
   id: string;
   title: string;
@@ -9,6 +19,8 @@ interface Post {
 }
 
 export default function MovieCard({ movie }: { movie: Post }) {
+  const optimizedPoster = getOptimizedImageUrl(movie.poster);
+  
   return (
     <div className="movie-card select-none pointer-events-none">
       <div className="flex justify-between">
@@ -17,7 +29,7 @@ export default function MovieCard({ movie }: { movie: Post }) {
       </div>
       <div className="relative w-[270px] h-[380px] overflow-hidden">
         <Image
-          src={movie.poster}
+          src={optimizedPoster}
           alt={movie.title}
           fill
           sizes="270px"
