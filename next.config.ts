@@ -24,6 +24,11 @@ const nextConfig: NextConfig = {
         hostname: 'i.namu.wiki',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.chosun.com',
+        pathname: '/**', 
+      },
     ],
   },
 };
