@@ -177,7 +177,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
 
   return (
     <main
-      className="w-screen h-screen flex flex-col justify-between items-center overflow:scroll md:overflow-hidden"
+      className="w-screen h-screen flex flex-col justify-between items-center overflow-y-scroll md:overflow-hidden"
       onMouseMove={handleMouseMoveGlobal}
     >
       {hoveredTitle && (
@@ -235,7 +235,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
                     initial={{ opacity: 0, filter: "blur(5px)" }}
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     exit={{ opacity: 0 }}
-                    className="shrink-0 md:w-[270px] md:h-[380px] bg-black/5 rounded-lg overflow-hidden relative"
+                    className="shrink-0 md:w-[270px] md:h-[380px] bg-black/5 rounded-lg overflow-y-scroll md:overflow-hidden relative"
                   >
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"

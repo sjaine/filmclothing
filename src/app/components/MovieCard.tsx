@@ -41,7 +41,7 @@ export default function MovieCard({
         <p className="text-base md:text-xl">{movie.year}</p>
         <p className="text-base md:text-xl">{movie.ratings}</p>
       </div>
-      <div className="relative w-[210px] h-[310px] md:w-[270px] md:h-[380px] overflow-hidden select-none">
+      <div className="relative w-[210px] h-[310px] md:w-[270px] md:h-[380px] overflow-y-scroll md:overflow-hidden select-none">
         <Image
           src={optimizedPoster}
           alt={movie.title}
