@@ -235,7 +235,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
                     initial={{ opacity: 0, filter: "blur(5px)" }}
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     exit={{ opacity: 0 }}
-                    className="shrink-0 md:w-[270px] md:h-[380px] bg-black/5 rounded-lg overflow-y-scroll md:overflow-hidden relative"
+                    className="shrink-0 w-[210px] h-[310px] md:w-[270px] md:h-[380px] bg-black/5 rounded-lg overflow-y-scroll md:overflow-hidden relative"
                   >
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
