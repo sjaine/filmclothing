@@ -35,17 +35,17 @@ export default function FilterMenu({
 
   return (
     <motion.div
-      className="z-[100] px-4"
+      className="z-[100] px-4 flex justify-center md:justify-start w-full"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <div className="flex flex-wrap justify-center gap-2 flex-wrap">
+      <div className="grid grid-cols-3 md:grid-cols-6 gap-2 max-w-[450px] md:max-w-none">
         <motion.button
           variants={itemVariants}
           whileTap={{ scale: 0.95 }}
           onClick={() => onFilterChange(null)}
-          className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 cursor-pointer sans min-w-[100px] justify-center ${
+          className={`flex items-center gap-2 px-4 md:px-5 py-2 rounded-full text-[12px] md:text-sm font-bold transition-all duration-300 cursor-pointer sans w-full justify-center ${
             activeFilter === null
               ? "bg-black text-white hover:bg-black/80"
               : "bg-black/10 text-black/80 hover:bg-black/20"
@@ -68,7 +68,7 @@ export default function FilterMenu({
             layout
             key={cat.value}
             onClick={() => onFilterChange(cat.value)}
-            className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-bold transition-all duration-300 cursor-pointer sans min-w-[100px] justify-center ${
+            className={`flex items-center gap-2 px-4 md:px-5 py-2 rounded-full text-[12px] md:text-sm font-bold transition-all duration-300 cursor-pointer sans w-full justify-center ${
               activeFilter === cat.value
                 ? "bg-black text-white hover:bg-black/80"
                 : "bg-black/10 text-black/80 hover:bg-black/20"

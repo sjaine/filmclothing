@@ -177,7 +177,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
 
   return (
     <main
-      className="w-screen h-screen flex flex-col justify-between items-center overflow-hidden"
+      className="w-screen h-screen flex flex-col justify-between items-center overflow:scroll md:overflow-hidden"
       onMouseMove={handleMouseMoveGlobal}
     >
       {hoveredTitle && (
@@ -203,7 +203,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
       </motion.header>
 
       <div className="w-[50vw] max-w-[250px] min-w-[150px] relative pb-2 flex justify-center items-center">
-        <Image
+        <Image 
           src="/dancing2.gif"
           width={170}
           height={150}
@@ -235,7 +235,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
                     initial={{ opacity: 0, filter: "blur(5px)" }}
                     animate={{ opacity: 1, filter: "blur(0px)" }}
                     exit={{ opacity: 0 }}
-                    className="shrink-0 w-[270px] h-[380px] bg-black/5 rounded-lg overflow-hidden relative"
+                    className="shrink-0 md:w-[270px] md:h-[380px] bg-black/5 rounded-lg overflow-hidden relative"
                   >
                     <motion.div
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
@@ -295,7 +295,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
               <button
                 onClick={fetchMorePosts}
                 disabled={isLoading}
-                className="text-[3vw] pl-5 hover:italic transition-all disabled:opacity-30 cursor-pointer"
+                className="text-lg md:text-[3vw] pl-5 hover:italic transition-all disabled:opacity-30 cursor-pointer"
               >
                 {isLoading ? "[LOADING]" : "[MORE]"}
               </button>
