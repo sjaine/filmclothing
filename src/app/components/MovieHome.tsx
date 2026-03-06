@@ -34,6 +34,18 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
+  const [hoveredTitle, setHoveredTitle] = useState<string | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMoveGlobal = (e: React.MouseEvent) => {
+    setMousePos({ x: e.clientX, y: e.clientY });
+
+    if (!itemsRef.current || !isMouseDown) return;
+    const x = e.pageX - itemsRef.current.offsetLeft;
+    const walk = (x - startX) * 2;
+    itemsRef.current.scrollLeft = scrollLeft - walk;
+  };
+
   const handleGlobalWheel = (e: WheelEvent) => {
     if (!itemsRef.current) return;
     itemsRef.current.scrollLeft += e.deltaY;
@@ -52,7 +64,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
       const response = await fetch(`/api?cursor=${nextCursor}`);
       const data = await response.json();
 
-      setMovies((prev) => [...prev, ...data.posts]); 
+      setMovies((prev) => [...prev, ...data.posts]);
       setNextCursor(data.nextCursor);
       setHasMore(data.hasMore);
     } catch (error) {
@@ -80,7 +92,23 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
   };
 
   return (
-    <main className="w-screen h-screen flex flex-col justify-between items-center overflow-hidden">
+    <main
+      className="w-screen h-screen flex flex-col justify-between items-center overflow-hidden"
+      onMouseMove={handleMouseMoveGlobal}
+    >
+      {hoveredTitle && (
+        <motion.div
+          className="fixed pointer-events-none z-50 bg-white text-black px-2 py-1 font-bold border border-black"
+          style={{
+            left: mousePos.x + 15,
+            top: mousePos.y + 15,
+          }}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          {hoveredTitle}
+        </motion.div>
+      )}
       <motion.header
         className="text-[12vw] leading-none"
         initial={{ opacity: 0, y: -100 }}
@@ -108,19 +136,24 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
       >
         {movies.map((movie, index) => (
           <motion.div
-            key={`${movie.id}-${index}`} 
+            key={`${movie.id}-${index}`}
             className="shrink-0 cursor-grab"
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
               type: "spring",
               duration: 0.8,
-              delay: 0.05, 
+              delay: 0.05,
               ease: [0.25, 0.1, 0.25, 1],
             }}
             whileHover={{ rotate: -5, transition: { duration: 0.4 } }}
           >
-            <MovieCard movie={movie} />
+            <MovieCard
+              key={movie.id}
+              movie={movie}
+              onMouseEnter={() => setHoveredTitle(movie.title)}
+              onMouseLeave={() => setHoveredTitle(null)}
+            />
           </motion.div>
         ))}
 

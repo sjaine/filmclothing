@@ -7,7 +7,7 @@ const getOptimizedImageUrl = (url: string) => {
     const baseUrl = url.split("._V1_")[0];
     return `${baseUrl}._V1_UX500_.webp`;
   }
-  
+
   return url;
 };
 interface Post {
@@ -18,22 +18,36 @@ interface Post {
   poster: string;
 }
 
-export default function MovieCard({ movie }: { movie: Post }) {
+interface MovieCardProps {
+  movie: Post;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
+}
+
+export default function MovieCard({
+  movie,
+  onMouseEnter,
+  onMouseLeave,
+}: MovieCardProps) {
   const optimizedPoster = getOptimizedImageUrl(movie.poster);
 
   return (
-    <div className="movie-card select-none pointer-events-none">
+    <div
+      className="movie-card select-none"
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
       <div className="flex justify-between">
         <p className="text-xl">{movie.year}</p>
         <p className="text-xl">{movie.ratings}</p>
       </div>
-      <div className="relative w-[270px] h-[380px] overflow-hidden">
+      <div className="relative w-[270px] h-[380px] overflow-hidden select-none">
         <Image
           src={optimizedPoster}
           alt={movie.title}
           fill
           sizes="270px"
-          className="object-cover"
+          className="object-cover select-none pointer-events-none"
           quality={50}
           priority={false}
         />
