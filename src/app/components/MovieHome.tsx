@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import MovieCard from "./MovieCard";
 import Image from "next/image";
@@ -33,6 +33,16 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleGlobalWheel = (e: WheelEvent) => {
+    if (!itemsRef.current) return;
+    itemsRef.current.scrollLeft += e.deltaY;
+  };
+
+  useEffect(() => {
+    window.addEventListener("wheel", handleGlobalWheel, { passive: false });
+    return () => window.removeEventListener("wheel", handleGlobalWheel);
+  }, []);
 
   const fetchMorePosts = async () => {
     if (isLoading || !hasMore) return;
