@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import MovieCard from "./MovieCard";
 import Image from "next/image";
+import FilterMenu from "./FilteredMovies";
 
 interface Post {
   id: string;
@@ -22,6 +23,8 @@ interface MovieScrollerProps {
 }
 
 export default function MovieScroller({ initialData }: MovieScrollerProps) {
+  const skeletonCount = 10;
+
   const [movies, setMovies] = useState<Post[]>(initialData.posts);
   const [nextCursor, setNextCursor] = useState<string | null>(
     initialData.nextCursor
@@ -37,6 +40,23 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
   const [hoveredTitle, setHoveredTitle] = useState<string | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
+  const [filterRating, setFilterRating] = useState<string | null>(null);
+
+  const [counts, setCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      const res = await fetch("/api?type=counts");
+      const data = await res.json();
+      setCounts(data);
+    };
+    fetchCounts();
+  }, []);
+
+  const handleFilterChange = (selectedRating: string | null) => {
+    setFilterRating(selectedRating);
+  };
+
   const handleMouseMoveGlobal = (e: React.MouseEvent) => {
     setMousePos({ x: e.clientX, y: e.clientY });
 
@@ -51,6 +71,67 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
     itemsRef.current.scrollLeft += e.deltaY;
   };
 
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  useEffect(() => {
+    if (isFirstRender) {
+      setIsFirstRender(false);
+      return;
+    }
+    resetAndFetch();
+  }, [filterRating]);
+
+  const displayedMovies = Array.isArray(movies) ? movies : [];
+
+  const resetAndFetch = async () => {
+    setIsLoading(true);
+    try {
+      const ratingQuery = filterRating
+        ? `&rating=${encodeURIComponent(filterRating)}`
+        : "";
+      const response = await fetch(`/api?cursor=${ratingQuery}`);
+      const data = await response.json();
+
+      if (data && Array.isArray(data.posts)) {
+        setMovies(data.posts);
+        setNextCursor(data.nextCursor);
+        setHasMore(data.hasMore);
+        if (itemsRef.current) itemsRef.current.scrollLeft = 0;
+      }
+    } catch (error) {
+      console.error("Filter fetch error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    const resetAndFetch = async () => {
+      setIsLoading(true);
+      setMovies([]);
+
+      try {
+        const ratingQuery = filterRating
+          ? `&rating=${encodeURIComponent(filterRating)}`
+          : "";
+        const response = await fetch(`/api?cursor=${ratingQuery}`);
+        const data = await response.json();
+
+        if (data && Array.isArray(data.posts)) {
+          setMovies(data.posts);
+          setNextCursor(data.nextCursor);
+          setHasMore(data.hasMore);
+        }
+      } catch (error) {
+        console.error("Filter fetch error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    resetAndFetch();
+  }, [filterRating]);
+
   useEffect(() => {
     window.addEventListener("wheel", handleGlobalWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleGlobalWheel);
@@ -61,7 +142,10 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
     setIsLoading(true);
 
     try {
-      const response = await fetch(`/api?cursor=${nextCursor}`);
+      const query = filterRating
+        ? `&rating=${encodeURIComponent(filterRating)}`
+        : "";
+      const response = await fetch(`/api?cursor=${nextCursor}${query}`);
       const data = await response.json();
 
       setMovies((prev) => [...prev, ...data.posts]);
@@ -127,48 +211,96 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
         unoptimized
       />
 
-      <section
-        ref={itemsRef}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        className="flex flex-row gap-4 overflow-x-auto w-full p-4 max-w-full"
-      >
-        {movies.map((movie, index) => (
-          <motion.div
-            key={`${movie.id}-${index}`}
-            className="shrink-0 cursor-grab"
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              type: "spring",
-              duration: 0.8,
-              delay: 0.05,
-              ease: [0.25, 0.1, 0.25, 1],
-            }}
-            whileHover={{ rotate: -5, transition: { duration: 0.4 } }}
-          >
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-              onMouseEnter={() => setHoveredTitle(movie.title)}
-              onMouseLeave={() => setHoveredTitle(null)}
-            />
-          </motion.div>
-        ))}
+      <div className="w-full flex flex-col items-start">
+        <FilterMenu
+          onFilterChange={handleFilterChange}
+          counts={counts}
+          activeFilter={filterRating}
+        />
 
-        {hasMore && (
-          <div className="shrink-0 flex items-center justify-center pr-10">
-            <button
-              onClick={fetchMorePosts}
-              disabled={isLoading}
-              className="text-[3vw] pl-5 hover:italic transition-all disabled:opacity-30 cursor-pointer"
-            >
-              {isLoading ? "[LOADING]" : "[MORE]"}
-            </button>
-          </div>
-        )}
-      </section>
+        <section
+          ref={itemsRef}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          className="flex flex-row gap-4 overflow-x-auto w-full p-4 max-w-full"
+        >
+          <AnimatePresence mode="popLayout">
+            {isLoading && movies.length === 0
+              ? Array.from({ length: skeletonCount }).map((_, i) => (
+                  <motion.div
+                    key={`skeleton-${i}`}
+                    initial={{ opacity: 0, filter: "blur(5px)" }}
+                    animate={{ opacity: 1, filter: "blur(0px)" }}
+                    exit={{ opacity: 0 }}
+                    className="shrink-0 w-[270px] h-[380px] bg-black/5 rounded-lg overflow-hidden relative"
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                      animate={{ x: ["-100%", "100%"] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 2, 
+                        ease: "linear",
+                      }}
+                    />
+                  </motion.div>
+                ))
+              : displayedMovies.map((movie) => (
+                  <motion.div
+                    key={movie.id}
+                    layout
+                    className="shrink-0 cursor-grab"
+                    initial={{
+                      opacity: 0,
+                      y: 10,
+                      scale: 0.98,
+                      filter: "blur(3px)",
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      scale: 1,
+                      filter: "blur(0px)",
+                    }}
+                    exit={{
+                      opacity: 0,
+                      scale: 0.95,
+                      filter: "blur(3px)",
+                      transition: { duration: 0.3 },
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 70, 
+                      damping: 15,
+                      mass: 1,
+                      delay: 0.05,
+                    }}
+                    whileHover={{ rotate: -5, transition: { duration: 0.4 } }}
+                  >
+                    <MovieCard
+                      key={movie.id}
+                      movie={movie}
+                      onMouseEnter={() => setHoveredTitle(movie.title)}
+                      onMouseLeave={() => setHoveredTitle(null)}
+                    />
+                  </motion.div>
+                ))}
+          </AnimatePresence>
+
+          {hasMore && (
+            <div className="shrink-0 flex items-center justify-center pr-10">
+              <button
+                onClick={fetchMorePosts}
+                disabled={isLoading}
+                className="text-[3vw] pl-5 hover:italic transition-all disabled:opacity-30 cursor-pointer"
+              >
+                {isLoading ? "[LOADING]" : "[MORE]"}
+              </button>
+            </div>
+          )}
+        </section>
+      </div>
     </main>
   );
 }
