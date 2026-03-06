@@ -17,6 +17,12 @@ body {
   background-attachment: fixed;
 }  
 
+@media (min-width: 768px) {
+  body {
+    background: linear-gradient(180deg, #FFF9C4 0%, #FFFFFF 60%);
+  }
+} 
+ 
 .sans {
   font-family: var(--font-instrument-sans);
 }
