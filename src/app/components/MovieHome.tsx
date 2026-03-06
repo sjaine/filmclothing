@@ -202,14 +202,16 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
         {"{FILMSCLOTHING.ONE}"}
       </motion.header>
 
-      <Image
-        src="/dancing2.gif"
-        width={170}
-        height={150}
-        alt="Dancing Ascii Art"
-        className="pb-2"
-        unoptimized
-      />
+      <div className="w-[50vw] max-w-[250px] min-w-[150px] relative pb-2 flex justify-center items-center">
+        <Image
+          src="/dancing2.gif"
+          width={170}
+          height={150}
+          alt="Dancing Ascii Art"
+          className="w-full h-auto object-contain"
+          unoptimized
+        />
+      </div>
 
       <div className="w-full flex flex-col items-start">
         <FilterMenu
@@ -240,7 +242,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
                       animate={{ x: ["-100%", "100%"] }}
                       transition={{
                         repeat: Infinity,
-                        duration: 2, 
+                        duration: 2,
                         ease: "linear",
                       }}
                     />
@@ -271,7 +273,7 @@ export default function MovieScroller({ initialData }: MovieScrollerProps) {
                     }}
                     transition={{
                       type: "spring",
-                      stiffness: 70, 
+                      stiffness: 70,
                       damping: 15,
                       mass: 1,
                       delay: 0.05,
